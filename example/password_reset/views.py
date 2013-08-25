@@ -26,15 +26,15 @@ def request_link(request):
     if not user:
         data = simplejson.dumps({'message': 'Invalid username'})
         return HttpResponse(data, status=403)
-    burner = Burn.objects.get(user=request.user)
+    burner = Burn.objects.get(user=user)
     if not burner:
         burner = Burn()
-        burner.user = request.user
+        burner.user = user
         burner.reset()
         burner.save()
 
     link =  'home.cspuredesign.com/labaide/app/#/chg_password?link={}' \
-            .format(Burn.objects.get(user=request.user).link)
+            .format(Burn.objects.get(user=user).link)
     body =  ''' 
             <html>
                 <body>
@@ -45,7 +45,7 @@ def request_link(request):
             ''' \
             .format(link)
 
-    email = EmailMessage('Password Reset', body, to=[request.user.email])
+    email = EmailMessage('Password Reset', body, to=[user.email])
     email.content_subtype = 'html'
     try:
         email.send()
