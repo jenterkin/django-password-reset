@@ -16,13 +16,16 @@ from django.utils import simplejson
 from django.core import serializers
 from django.core.mail import EmailMessage
 
-@require_http_methods(['GET'])
+@csrf_exempt
+@require_http_methods(['POST'])
 def request_link(request):
     '''
     Creates burn link for user and sends email with link
     '''
-    if not request.user:
-        return HttpResponse(status=403)
+    user = User.objects.get(username=request.POST['username'])
+    if not user:
+        data = simplejson.dumps({'message': 'Invalid username'})
+        return HttpResponse(data, status=403)
     burner = Burn.objects.get(user=request.user)
     if not burner:
         burner = Burn()
