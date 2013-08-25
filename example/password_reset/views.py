@@ -26,8 +26,9 @@ def request_link(request):
     if not user:
         data = simplejson.dumps({'message': 'Invalid username'})
         return HttpResponse(data, status=403)
-    burner = Burn.objects.get(user=user)
-    if not burner:
+    try:
+        burner = Burn.objects.get(user=user)
+    except:
         burner = Burn()
         burner.user = user
         burner.reset()
