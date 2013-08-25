@@ -1,10 +1,12 @@
 from django.conf.urls import patterns, include, url
 from password_reset.views import (
-        password_reset,
+        request_link,
+        reset,
     )
 
 urlpatterns = patterns('',
-    url(r'^password_reset/$', password_reset),
+    url(r'^request_link/$', request_link),
+    url(r'^reset/$', reset),
     # url(r'^example/', include('example.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

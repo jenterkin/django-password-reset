@@ -52,12 +52,16 @@ def request_link(request):
     data = simplejson.dumps({'message': ''})
     return HttpResponse(data, status=200, mimetype='application/json')
 
-@require_http_methods(['GET'])
+@csrf_exempt
+@require_http_methods(['POST'])
 def reset(request):
     try:
-        request.user.set_password(request.POST['password'])
-        request.user.save()
+        burner = Burn.objects.get(link=request.POST['link'])
+        user = burner.user
+        user.set_password(request.POST['password'])
+        user.save()
         data = simplejson.dumps({'message': 'Password reset'})
+        burner.delete()
         return HttpResponse(data, status=200)
     except:
         data = simplejson.dumps({'message': 'Error resetting password'})
